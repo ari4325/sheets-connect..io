@@ -1,0 +1,68 @@
+<html>
+    <title>Google Sheets Connect</title>
+    <script src="https://apis.google.com/js/platform.js"></script>
+</html>
+<body>
+    <div classname="container" id="outer">
+        <form id="form1">
+            <label for="fname">First name:</label><br>
+            <input type="text" id="fname" name="fname"><br><br>
+            <label for="lname">Last name:</label><br>
+            <input type="text" id="lname" name="lname"><br><br>
+            <label for="fname">Address:</label><br>
+            <input type="text" id="address" name="address"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        const SHEET_ID = '1H1idTGBaFV5JO66jImWVngeI9vdoxYbMaNOiOKAi-TE';
+        const ACCESS_TOKEN = 'ya29.a0ARrdaM8USHxW7UQn1cWv3TOTg9EB_nsAYT-3wVpHD6w37LwiRA4eB2bHawab5p2PDG3RQnWhXbLU5bSAMKtpBWfpbegfM2TiRBzKGTPcw2PNf8MF4EiSq1nf5wC_qelgLRK3D0VK8psyi6TpIf8XNPRIXRES';
+
+        var fname = document.getElementById('fname');
+        var lnmae = document.getElementById('lname');
+        var address = document.getElementById('address');
+
+        var form = document.getElementById("form1");
+        form.addEventListener('submit', handleForm);
+        /*window.addEventListener('load', (event) => {
+            gapi.load('client:auth2', initClient);
+         
+        })
+        function initClient(){
+            var API_KEY = 'AIzaSyCnvslFz-SoS9Jsohn02Fjy4lR3s_XzTzw';  
+            var CLIENT_ID = '664854847379-v23ej02qht5ep68j5hq3e8nc9cm7c8dl.apps.googleusercontent.com';  
+            var SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+
+            gapi.client.init({
+            'apiKey': API_KEY,
+            'clientId': CLIENT_ID,
+            'scope': SCOPE,
+            'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            }).then(function() {
+                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+                updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            });
+        }*/
+        function handleForm(event){
+            event.preventDefault();
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1!A1:D1:append?valueInputOption=USER_ENTERED`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    //update this token with yours. 
+                    Authorization: `Bearer ${ACCESS_TOKEN}`,
+                },
+                body: JSON.stringify({
+
+                   values: [[fname.value, lname.value, address.value]]
+
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data));
+        }
+    </script>
+</body>
+
+
